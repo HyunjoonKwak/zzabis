@@ -584,15 +584,11 @@ class ZzabisApp:
                 self.ui.signals.set_listening.emit(False)
                 return
 
-            # UI에 인식된 텍스트 표시
-            self.ui.signals.update_text.emit(text)
-
             # "엔터" 명령 처리
             text_lower = text.lower().strip()
             if "엔터" in text_lower and len(text_lower) < 10:
                 self.commands._press_key("enter")
-                self.ui.signals.update_response.emit("엔터")
-                self.ui.signals.update_console.emit("Enter 키 입력")
+                self.ui.signals.update_response.emit("Enter ↵")
                 self.processing = False
                 self.ui.signals.set_listening.emit(False)
                 return
@@ -600,16 +596,16 @@ class ZzabisApp:
             # 스타일 변환 후 타이핑 + 자동 엔터
             self.ui.signals.update_status.emit("변환 중...")
             transformed_text = self.ai.transform_style(text, self.current_style)
+
+            # UI에 변환된 텍스트 표시
+            self.ui.signals.update_response.emit(transformed_text)
+            print(f"  → 입력: {transformed_text}")
+
+            # 타이핑 + 엔터
             self.commands._type_text(transformed_text)
             time.sleep(0.1)
             self.commands._press_key("enter")
-
-            if transformed_text != text:
-                self.ui.signals.update_response.emit(f"→ {transformed_text}")
-                self.ui.signals.update_console.emit(f"변환됨: {text} → {transformed_text}")
-            else:
-                self.ui.signals.update_response.emit(f"입력됨")
-                self.ui.signals.update_console.emit(f"입력됨: {transformed_text}")
+            print(f"  → 키 입력: enter")
 
             self.ui.signals.update_status.emit(f"{self._get_hotkey_name()}으로 녹음")
 

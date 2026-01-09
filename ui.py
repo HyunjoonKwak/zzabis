@@ -503,25 +503,27 @@ class MacVoiceUI(QWidget):
 
         right_section.addLayout(status_row)
 
-        # 인식 텍스트 + 복사 버튼
+        # 변환된 텍스트 + 복사 버튼
         text_row = QHBoxLayout()
         text_row.setSpacing(8)
 
-        self.text_label = QLabel("")
-        self.text_label.setWordWrap(True)
-        self.text_label.setMinimumHeight(40)
-        self.text_label.setStyleSheet("""
-            color: rgba(255, 255, 255, 220);
-            font-size: 14px;
-            padding: 10px 14px;
-            background: rgba(255, 255, 255, 12);
-            border-radius: 10px;
+        self.response_label = QLabel("")
+        self.response_label.setWordWrap(True)
+        self.response_label.setMinimumHeight(60)
+        self.response_label.setStyleSheet("""
+            color: rgba(255, 255, 255, 240);
+            font-size: 15px;
+            font-weight: 500;
+            padding: 14px 16px;
+            background: rgba(255, 80, 50, 20);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 100, 80, 80);
         """)
-        text_row.addWidget(self.text_label, 1)
+        text_row.addWidget(self.response_label, 1)
 
         # 복사 버튼
         self.copy_btn = QPushButton("📋")
-        self.copy_btn.setFixedSize(36, 36)
+        self.copy_btn.setFixedSize(40, 40)
         self.copy_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         self.copy_btn.setToolTip("텍스트 복사")
         self.copy_btn.setStyleSheet("""
@@ -530,7 +532,7 @@ class MacVoiceUI(QWidget):
                 color: white;
                 border: none;
                 border-radius: 8px;
-                font-size: 16px;
+                font-size: 18px;
             }
             QPushButton:hover {
                 background: rgba(100, 150, 200, 200);
@@ -540,21 +542,6 @@ class MacVoiceUI(QWidget):
         text_row.addWidget(self.copy_btn)
 
         right_section.addLayout(text_row)
-
-        # AI 응답
-        self.response_label = QLabel("")
-        self.response_label.setWordWrap(True)
-        self.response_label.setMinimumHeight(50)
-        self.response_label.setStyleSheet("""
-            color: rgba(255, 200, 150, 255);
-            font-size: 15px;
-            font-weight: 500;
-            padding: 12px 14px;
-            background: rgba(255, 80, 50, 15);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 100, 80, 60);
-        """)
-        right_section.addWidget(self.response_label)
 
         right_section.addStretch()
         content.addLayout(right_section, 1)
@@ -641,15 +628,17 @@ class MacVoiceUI(QWidget):
         self.status_label.setText(text)
 
     def set_text(self, text: str):
+        """인식된 텍스트 표시 (response_label 사용)"""
         if text:
-            self.text_label.setText(f'"{text}"')
+            self.response_label.setText(f'"{text}"')
         else:
-            self.text_label.setText("")
+            self.response_label.setText("")
 
     def set_response(self, text: str):
+        """변환된 텍스트 표시"""
         self.response_label.setText(text)
         self.orb.set_state("speaking")
-        QTimer.singleShot(3000, lambda: self.orb.set_state("idle") if self.orb.state == "speaking" else None)
+        QTimer.singleShot(2000, lambda: self.orb.set_state("idle") if self.orb.state == "speaking" else None)
 
     def on_level(self, level: float):
         self.waveform.set_level(level)
@@ -691,14 +680,16 @@ class MacVoiceUI(QWidget):
         self.console_label.setText(f"▸ {text}")
 
     def _copy_text(self):
-        """인식된 텍스트 클립보드에 복사"""
-        text = self.text_label.text()
-        if text and text.startswith('"') and text.endswith('"'):
-            text = text[1:-1]  # 따옴표 제거
+        """텍스트 클립보드에 복사"""
+        text = self.response_label.text()
+        # 따옴표 또는 화살표 제거
+        if text.startswith('"') and text.endswith('"'):
+            text = text[1:-1]
+        if text.startswith("→ "):
+            text = text[2:]
         if text:
             clipboard = QApplication.clipboard()
             clipboard.setText(text)
-            # 복사 완료 피드백
             self.copy_btn.setText("✓")
             QTimer.singleShot(1000, lambda: self.copy_btn.setText("📋"))
 
