@@ -352,7 +352,6 @@ class CommandExecutor:
             # 붙여넣기
             pyautogui.hotkey('command', 'v')
             time.sleep(0.1)
-            print(f"  → 입력: {text}")
         finally:
             # 클립보드 복원
             try:
@@ -383,7 +382,6 @@ class CommandExecutor:
         }
         mapped_key = key_map.get(key.lower(), key.lower())
         pyautogui.press(mapped_key)
-        print(f"  → 키 입력: {key}")
 
     def _select_all(self):
         """전체 선택 (Cmd+A)"""
