@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zzabis"
+version = "1.0.0"
+description = "AI 음성 타이핑 도우미 - OpenAI Whisper + GPT-4o-mini 스타일 변환"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Your Name", email = "your@email.com"}
+]
+keywords = ["voice", "typing", "ai", "whisper", "gpt", "korean"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: MacOS X",
+    "Environment :: Win32 (MS Windows)",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+]
+dependencies = [
+    "PyQt6>=6.4.0",
+    "pynput>=1.7.6",
+    "pyaudio>=0.2.13",
+    "numpy>=1.24.0",
+    "openai>=1.0.0",
+    "sounddevice>=0.4.6",
+    "pyperclip>=1.8.0",
+    "pyautogui>=0.9.54",
+]
+
+[project.scripts]
+zzabis = "main:main"
+
+[project.urls]
+Homepage = "https://github.com/johunsang/zzabis"
+Repository = "https://github.com/johunsang/zzabis"
